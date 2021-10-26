@@ -1,11 +1,12 @@
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+
 import { useDispatch } from "react-redux";
 
 import { useSelector } from "react-redux";
 import { addcartThunk } from "../../store/modules/cart/thunk";
 
-const ProductList = ({ type }) => {
+const ProductList = ({ type,setCartQt }) => {
   const useStyles = makeStyles((theme) => ({
     img: {
       width: "100px",
@@ -67,14 +68,17 @@ const ProductList = ({ type }) => {
   const classe = useStyles();
   const product = useSelector((state) => state.products);
   const filter = useSelector((state) => state.filter);
-
+  
+  
   const dispatch = useDispatch();
   const handleClick = (product) => {
-    dispatch(addcartThunk(product));
+    dispatch(addcartThunk(product,setCartQt));
+    setCartQt(JSON.parse(localStorage.getItem("cart")).length)
   };
 
   return (
     <div className={classe.root}>
+      
       {filter[0] ? (
         filter.map((product, index) => (
           <div className={classe.container}>

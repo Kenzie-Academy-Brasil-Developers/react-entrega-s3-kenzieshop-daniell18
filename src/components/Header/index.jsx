@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { filtersearch } from "../../store/modules/search/action";
 import Cart from "../cart";
-const Header = () => {
+const Header = ({cartQt,setCartQt}) => {
   const useStyles = makeStyles((theme) => ({
     root: {
       backgroundColor: "#353AF5",
@@ -88,7 +88,8 @@ const Header = () => {
           />
         </Grid>
         <Grid>
-          <Cart />
+          <Cart cartQt={cartQt} setCartQt={setCartQt} />
+          
         </Grid>
       </Grid>
     </>

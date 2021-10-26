@@ -1,12 +1,12 @@
 import { Button, SwipeableDrawer } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Carticon from "../../assets/icone-cart.png";
 import { AiTwotoneDelete } from "@react-icons/all-files/ai/AiTwotoneDelete";
 import { useDispatch } from "react-redux";
 import { removecartThunk } from "../../store/modules/cart/thunk";
-const Cart = () => {
+const Cart = ({setCartQt,cartQt}) => {
   const [open, setOpen] = useState(false);
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,18 +41,46 @@ const Cart = () => {
       display: "flex",
       justifyContent: "center",
     },
+    quantity:{
+      display:"flex",
+      justifyContent:"center",
+      alignItems:"center"
+    },
+    quantityNumber:{
+      position: "absolute",
+      backgroundColor:"orange",
+      color: "white",
+      top: "6vh",
+      width: "17px",
+      right: "11px",
+      height: "17px",
+      display: "flex",
+      
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize:"14px"
+    
+    }
   }));
-
+  const [update,setUpdate]=useState(0)
   const classe = useStyles();
   const dispatch = useDispatch();
-  const list = JSON.parse(localStorage.getItem("cart")) || [];
+  let list = JSON.parse(localStorage.getItem("cart")) || []
+  useEffect(() => {
+    list = JSON.parse(localStorage.getItem("cart")) || []
+ 
+  }, [update,list])
   const handleClick = (id) => {
-    dispatch(removecartThunk(id));
-    setOpen(false);
+    
+
+      dispatch(removecartThunk(id, setCartQt,cartQt,list,update,setUpdate));
+   
+    
   };
-  console.log(list);
+  
   return (
     <>
+    <div className={classe.quantity}>
       <img
         id="teste"
         onClick={() => setOpen(true)}
@@ -60,6 +88,8 @@ const Cart = () => {
         src={Carticon}
         alt=""
       />
+     <p className={classe.quantityNumber}>{cartQt}</p>
+      </div>
       <SwipeableDrawer
         anchor="right"
         open={open}
@@ -71,12 +101,12 @@ const Cart = () => {
           <h4 className={classe.txt}>
             Total :
             <div>
-              {list[0]
+              ${list[0]
                 ? list
                     .reduce((acc, valorT) => {
                       return acc + valorT.price;
                     }, 0)
-                    .toFixed(2)
+                    .toLocaleString()
                 : 0}
             </div>
           </h4>
@@ -86,6 +116,8 @@ const Cart = () => {
             <img className={classe.img} src={product.img} alt={product.name} />
             <div className={classe.title}>{product.name}</div>
             <div className={classe.price}>{product.price}</div>
+           
+            <div>{product.quantity}</div>
             <Button
               onClick={() => handleClick(product.id)}
               startIcon={<AiTwotoneDelete />}
